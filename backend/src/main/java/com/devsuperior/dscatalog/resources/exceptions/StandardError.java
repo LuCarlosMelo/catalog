@@ -3,17 +3,17 @@ package com.devsuperior.dscatalog.resources.exceptions;
 import java.io.Serializable;
 import java.time.Instant;
 
-public class StandardError implements Serializable{
+public class StandardError implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Instant timestamp;
 	private Integer status;
 	private String error;
-	private String mensage;
+	private String message;
 	private String path;
-	
+
 	public StandardError() {
-		
+
 	}
 
 	public Instant getTimestamp() {
@@ -40,12 +40,12 @@ public class StandardError implements Serializable{
 		this.error = error;
 	}
 
-	public String getMensage() {
-		return mensage;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setMensage(String mensage) {
-		this.mensage = mensage;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public String getPath() {
@@ -55,4 +55,4 @@ public class StandardError implements Serializable{
 	public void setPath(String path) {
 		this.path = path;
 	}
-}	
+}

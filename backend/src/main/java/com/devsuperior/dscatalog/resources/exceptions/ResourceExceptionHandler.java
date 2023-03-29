@@ -14,43 +14,33 @@ import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
-	
+
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<StandardError> entityNotFound(ResourceNotFoundException e, HttpServletRequest request) {
-		StandardError err = new StandardError();
-		
 		HttpStatus status = HttpStatus.NOT_FOUND;
-		err.setTimestamp(Instant.now());
-		err.setStatus(status.value());
-		err.setError("Resource not found");
-		err.setMensage(e.getMessage());
-		err.setPath(request.getRequestURI());
-	
+		String error = "Resource not found";
+
+		StandardError err = standardError(status, error, e, request);
 		return ResponseEntity.status(status).body(err);
 	}
-	
+
 	@ExceptionHandler(DataBaseException.class)
 	public ResponseEntity<StandardError> dataBase(DataBaseException e, HttpServletRequest request) {
-		StandardError err = new StandardError();
-		
 		HttpStatus status = HttpStatus.BAD_REQUEST;
+		String error = "Database excpetion";
 
-		err.setTimestamp(Instant.now());
-		err.setStatus(status.value());
-		err.setError("Database excpetion");
-		err.setMensage(e.getMessage());
-		err.setPath(request.getRequestURI());
-		
+		StandardError err = standardError(status, error, e, request);
 		return ResponseEntity.status(status).body(err);
 	}
+
+	private StandardError standardError(HttpStatus status, String error, RuntimeException e,
+			HttpServletRequest request) {
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(status.value());
+		err.setError(error);
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		return err;
+	}
 }
-
-
-
-
-
-
-
-
-
-
