@@ -38,7 +38,7 @@ public class ProductServiceIT {
 	@Test
 	public void deleteShouldDeleteResourceWhenIdExists() {
 		 service.delete(existingId);
-		 Assertions.assertEquals(countTotalProducts - 1, repository.count());	 
+		 Assertions.assertEquals(countTotalProducts - 1, repository.count());
 	}
 	
 	@Test
