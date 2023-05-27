@@ -53,6 +53,11 @@ public class UserService implements UserDetailsService {
         return new UserDTO(entity);
     }
 
+    @Transactional(readOnly = true)
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
     @Transactional
     public UserDTO insert(UserInsertDTO dto) {
         User entity = new User();
