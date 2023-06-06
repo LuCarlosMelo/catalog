@@ -1,8 +1,8 @@
 package com.devsuperior.dscatalog.services;
 
-import com.devsuperior.dscatalog.dto.UserDTO;
-import com.devsuperior.dscatalog.dto.UserInsertDTO;
-import com.devsuperior.dscatalog.dto.UserUpdateDTO;
+import com.devsuperior.dscatalog.dtos.users.UserDTO;
+import com.devsuperior.dscatalog.dtos.users.UserInsertRequest;
+import com.devsuperior.dscatalog.dtos.users.UserUpdateRequest;
 import com.devsuperior.dscatalog.entities.User;
 import com.devsuperior.dscatalog.repositories.RoleRepository;
 import com.devsuperior.dscatalog.repositories.UserRepository;
@@ -10,7 +10,7 @@ import com.devsuperior.dscatalog.services.exceptions.DataBaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -23,33 +23,34 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService implements IUserService, UserDetailsService {
 
-    private static Logger logger = LoggerFactory.getLogger(UserService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
+    public UserService(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
 
     @Transactional(readOnly = true)
     public Page<UserDTO> findAllPaged(Pageable pageable) {
-        Page<User> list = userRepository.findAll(pageable);
-        return list.map(x -> new UserDTO(x));
+        var list = userRepository.findAll(pageable);
+        return list.map(UserDTO::new);
     }
 
     @Transactional(readOnly = true)
     public UserDTO findById(Long id) {
-        Optional<User> obj = userRepository.findById(id);
-        User entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
+        var obj = userRepository.findById(id);
+        var entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
         return new UserDTO(entity);
     }
 
@@ -59,20 +60,19 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public UserDTO insert(UserInsertDTO dto) {
-        User entity = new User();
-        copyDtoToEntity(dto, entity);
-        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+    public UserDTO insert(UserInsertRequest userInsertDTO) {
+        var entity = new User();
+        copyUserInsertToEntity(userInsertDTO, entity);
+        entity.setPassword(passwordEncoder.encode(userInsertDTO.getPassword()));
         entity = userRepository.save(entity);
         return new UserDTO(entity);
     }
 
-
     @Transactional
-    public UserDTO update(Long id, UserUpdateDTO dto) {
+    public UserDTO update(Long id, UserUpdateRequest userUpdateDTO) {
         try {
-            User entity = userRepository.getOne(id);
-            copyDtoToEntity(dto, entity);
+            var entity = userRepository.getOne(id);
+            copyUpdateDtoToEntity(userUpdateDTO, entity);
             entity = userRepository.save(entity);
             return new UserDTO(entity);
         } catch (EntityNotFoundException e) {
@@ -91,24 +91,35 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    private void copyDtoToEntity(UserDTO userDto, User entity) {
-        entity.setFirstName(userDto.getFirstName());
-        entity.setLastName(userDto.getLastName());
-        entity.setEmail(userDto.getEmail());
-
-        entity.getRoles().clear();
-        userDto.getRoles().forEach(role -> entity.getRoles().add(roleRepository.getOne(role.getId())));
-
-    }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepository.findByEmail(username);
         if(user == null){
-            logger.error("User not found" + username);
+            LOGGER.error("User not found" + username);
             throw new UsernameNotFoundException("Email not found");
         }
-        logger.info("User found: " + username);
+        LOGGER.info("User found: " + username);
         return user;
     }
+
+    private void copyUpdateDtoToEntity(UserUpdateRequest userDTO, User entity) {
+        if(userDTO.getFirstName() != null && !userDTO.getFirstName().isBlank()){
+            entity.setFirstName(userDTO.getFirstName());
+        }
+        if(userDTO.getLastName() != null && !userDTO.getLastName().isBlank()){
+            entity.setLastName(userDTO.getLastName());
+        }
+        if(userDTO.getEmail() != null){
+            entity.setEmail(userDTO.getEmail());
+        }
+        entity.getRoles().clear();
+        userDTO.getRoles().forEach(role -> entity.getRoles().add(roleRepository.getOne(role.getId())));
+    }
+
+    private void copyUserInsertToEntity(UserInsertRequest userInsertDTO, User entity){
+        BeanUtils.copyProperties(userInsertDTO, entity);
+        entity.getRoles().clear();
+        userInsertDTO.getRoles().forEach(role -> entity.getRoles().add(roleRepository.getOne(role.getId())));
+    }
+
 }

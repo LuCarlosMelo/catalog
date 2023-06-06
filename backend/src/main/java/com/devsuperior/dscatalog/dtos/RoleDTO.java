@@ -1,4 +1,4 @@
-package com.devsuperior.dscatalog.dto;
+package com.devsuperior.dscatalog.dtos;
 
 import com.devsuperior.dscatalog.entities.Role;
 

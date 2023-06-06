@@ -1,9 +1,9 @@
 package com.devsuperior.dscatalog.resources;
 
-import com.devsuperior.dscatalog.dto.UserDTO;
-import com.devsuperior.dscatalog.dto.UserInsertDTO;
-import com.devsuperior.dscatalog.dto.UserUpdateDTO;
-import com.devsuperior.dscatalog.services.UserService;
+import com.devsuperior.dscatalog.dtos.users.UserDTO;
+import com.devsuperior.dscatalog.dtos.users.UserInsertRequest;
+import com.devsuperior.dscatalog.dtos.users.UserUpdateRequest;
+import com.devsuperior.dscatalog.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,8 +18,11 @@ import java.net.URI;
 @RequestMapping(value = "/users")
 public class UserResource {
 
-	@Autowired
-	private UserService service;
+	private final IUserService service;
+
+	public UserResource(IUserService service) {
+		this.service = service;
+	}
 
 	@GetMapping
 	public ResponseEntity<Page<UserDTO>> findAll(Pageable pageable) {
@@ -29,23 +32,22 @@ public class UserResource {
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
-		UserDTO dto = service.findById(id);
+		var dto = service.findById(id);
 		return ResponseEntity.ok(dto);
 	}
 	
 	@PostMapping 
-	public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO dto){
-		UserDTO newDto = service.insert(dto);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(newDto.getId()).toUri();
-		return ResponseEntity.created(uri).body(newDto);
-		
+	public ResponseEntity<String> insert(@Valid @RequestBody UserInsertRequest dto){
+		var user = service.insert(dto);
+		var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(user.getId()).toUri();
+		return ResponseEntity.created(uri).body("Criado com sucesso. Seu email: " + user.getEmail());
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<UserDTO> update( @PathVariable Long id,@Valid @RequestBody UserUpdateDTO dto){
-		var newDto = service.update(id, dto);
-		return ResponseEntity.ok(newDto);
+	public ResponseEntity<UserDTO> update( @PathVariable Long id,@Valid @RequestBody UserUpdateRequest userUpdateRequest){
+		var user = service.update(id, userUpdateRequest);
+		return ResponseEntity.ok(user);
 	}
 	 
 	@DeleteMapping(value = "/{id}")

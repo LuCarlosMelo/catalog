@@ -1,6 +1,6 @@
 package com.devsuperior.dscatalog.services.validation;
 
-import com.devsuperior.dscatalog.dto.UserInsertDTO;
+import com.devsuperior.dscatalog.dtos.users.UserInsertRequest;
 import com.devsuperior.dscatalog.entities.User;
 import com.devsuperior.dscatalog.repositories.UserRepository;
 import com.devsuperior.dscatalog.resources.exceptions.FieldMessage;
@@ -11,7 +11,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertDTO> {
+public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertRequest> {
 
     @Autowired
     private UserRepository userRepository;
@@ -21,7 +21,7 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
     }
 
     @Override
-    public boolean isValid(UserInsertDTO dto, ConstraintValidatorContext context) {
+    public boolean isValid(UserInsertRequest dto, ConstraintValidatorContext context) {
 
         List<FieldMessage> list = new ArrayList<>();
         User user = userRepository.findByEmail(dto.getEmail());

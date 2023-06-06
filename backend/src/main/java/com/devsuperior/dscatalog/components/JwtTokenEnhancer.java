@@ -1,6 +1,6 @@
 package com.devsuperior.dscatalog.components;
 
-import com.devsuperior.dscatalog.services.UserService;
+import com.devsuperior.dscatalog.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -15,7 +15,7 @@ import java.util.Map;
 public class JwtTokenEnhancer implements TokenEnhancer {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken oAuth2AccessToken, OAuth2Authentication oAuth2Authentication) {
