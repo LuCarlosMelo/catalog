@@ -2,6 +2,7 @@ package com.devsuperior.dscatalog.resources.exceptions;
 
 import com.devsuperior.dscatalog.services.exceptions.DataBaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
+import com.fasterxml.jackson.core.JsonParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -40,6 +41,14 @@ public class ResourceExceptionHandler {
 
 		return ResponseEntity.status(status).body(validationError);
 	}
+
+	@ExceptionHandler(JsonParseException.class)
+	public ResponseEntity<Object> jsonError(JsonParseException e, HttpServletRequest request) {
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = insertStandardError(status, "JSON Parse Exception", e, request);
+		return ResponseEntity.status(status).body(err);
+	}
+
 
 	private ValidationError insertStandardError(HttpStatus status, String error, Exception e,
 			HttpServletRequest request) {
