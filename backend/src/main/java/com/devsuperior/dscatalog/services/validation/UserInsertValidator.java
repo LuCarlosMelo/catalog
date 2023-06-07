@@ -21,10 +21,10 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
     }
 
     @Override
-    public boolean isValid(UserInsertRequest dto, ConstraintValidatorContext context) {
+    public boolean isValid(UserInsertRequest userInsertRequest, ConstraintValidatorContext context) {
 
         List<FieldMessage> list = new ArrayList<>();
-        User user = userRepository.findByEmail(dto.getEmail());
+        User user = userRepository.findByEmail(userInsertRequest.getEmail());
         if(user != null){
             list.add(new FieldMessage("email", "Email já existe"));
         }

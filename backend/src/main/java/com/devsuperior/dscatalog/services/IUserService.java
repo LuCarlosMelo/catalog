@@ -1,23 +1,24 @@
 package com.devsuperior.dscatalog.services;
 
-import com.devsuperior.dscatalog.dtos.users.UserDTO;
 import com.devsuperior.dscatalog.dtos.users.UserInsertRequest;
+import com.devsuperior.dscatalog.dtos.users.UserResponse;
 import com.devsuperior.dscatalog.dtos.users.UserUpdateRequest;
 import com.devsuperior.dscatalog.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface IUserService {
+public interface IUserService extends UserDetailsService {
 
-    Page<UserDTO> findAllPaged(Pageable pageable);
+    Page<UserResponse> findAllPaged(Pageable pageable);
 
-    UserDTO findById(Long id);
+    UserResponse findById(Long id);
 
     User findByEmail(String email);
 
-    UserDTO insert(UserInsertRequest dto);
+    UserInsertRequest insert(UserInsertRequest dto);
 
-    UserDTO update(Long id, UserUpdateRequest dto);
+    UserUpdateRequest update(Long id, UserUpdateRequest dto);
 
     void delete(Long id);
 

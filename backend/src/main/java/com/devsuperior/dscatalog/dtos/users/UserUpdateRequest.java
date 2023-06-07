@@ -1,6 +1,7 @@
 package com.devsuperior.dscatalog.dtos.users;
 
 import com.devsuperior.dscatalog.dtos.RoleDTO;
+import com.devsuperior.dscatalog.entities.User;
 import com.devsuperior.dscatalog.services.validation.UserUpdateValid;
 
 import javax.validation.constraints.Email;
@@ -23,7 +24,12 @@ public class UserUpdateRequest {
 
 	private Set<RoleDTO> roles = new HashSet<>();
 
-	public UserUpdateRequest() {
+	public UserUpdateRequest(){}
+	public UserUpdateRequest(User user) {
+		firstName = user.getFirstName();
+		lastName = user.getLastName();
+		email = user.getEmail();
+		user.getRoles().forEach(role -> this.roles.add(new RoleDTO()));
 	}
 
 	public String getFirstName() {
