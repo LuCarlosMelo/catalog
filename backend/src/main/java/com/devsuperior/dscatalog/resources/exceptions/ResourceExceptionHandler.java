@@ -25,7 +25,7 @@ public class ResourceExceptionHandler {
 
 	@ExceptionHandler(DataBaseException.class)
 	public ResponseEntity<StandardError> dataBase(DataBaseException e, HttpServletRequest request) {
-		HttpStatus status = HttpStatus.NOT_FOUND;
+		HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
 		StandardError standardError = insertStandardError(status, "Database excpetion", e, request);
 		return ResponseEntity.status(status).body(standardError);
 

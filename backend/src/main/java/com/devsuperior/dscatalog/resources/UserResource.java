@@ -3,7 +3,7 @@ package com.devsuperior.dscatalog.resources;
 import com.devsuperior.dscatalog.dtos.users.UserInsertRequest;
 import com.devsuperior.dscatalog.dtos.users.UserResponse;
 import com.devsuperior.dscatalog.dtos.users.UserUpdateRequest;
-import com.devsuperior.dscatalog.services.IUserService;
+import com.devsuperior.dscatalog.services.ImplUserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +16,9 @@ import javax.validation.Valid;
 @RequestMapping(value = "/users")
 public class UserResource {
 
-	private final IUserService service;
+	private final ImplUserService service;
 
-	public UserResource(IUserService service) {
+	public UserResource(ImplUserService service) {
 		this.service = service;
 	}
 

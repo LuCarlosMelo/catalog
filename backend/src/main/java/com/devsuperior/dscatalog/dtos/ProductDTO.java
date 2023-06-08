@@ -30,7 +30,7 @@ public class ProductDTO implements Serializable {
 	@PastOrPresent(message = "Não pode ser data futura")
 	private Instant date;
 	
-	private List<CategoryDTO> categories = new ArrayList<>();
+	private List<CategoryRequest> categories = new ArrayList<>();
 	
 	public ProductDTO() {
 		
@@ -57,7 +57,7 @@ public class ProductDTO implements Serializable {
 	
 	public ProductDTO(Product entity, Set<Category> categories ) {
 		this(entity);
-		categories.forEach(x -> this.categories.add(new CategoryDTO(x)));
+		categories.forEach(x -> this.categories.add(new CategoryRequest(x)));
 	}
 
 	public Long getId() {
@@ -108,7 +108,7 @@ public class ProductDTO implements Serializable {
 		this.date = date;
 	}
 
-	public List<CategoryDTO> getCategories() {
+	public List<CategoryRequest> getCategories() {
 		return categories;
 	}
 }

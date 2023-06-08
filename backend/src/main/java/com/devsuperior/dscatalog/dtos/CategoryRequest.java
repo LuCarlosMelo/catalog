@@ -4,20 +4,20 @@ import java.io.Serializable;
 
 import com.devsuperior.dscatalog.entities.Category;
 
-public class CategoryDTO implements Serializable {
+public class CategoryRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	private String name;
 
-	public CategoryDTO(Long id, String name) {
+	public CategoryRequest(Long id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public CategoryDTO(Category entity) {
-		this.id = entity.getId();
-		this.name = entity.getName();
+	public CategoryRequest(Category category) {
+		this.id = category.getId();
+		this.name = category.getName();
 	}
 
 	public Long getId() {

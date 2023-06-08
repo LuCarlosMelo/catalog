@@ -4,14 +4,11 @@ import com.devsuperior.dscatalog.dtos.users.UserInsertRequest;
 import com.devsuperior.dscatalog.dtos.users.UserResponse;
 import com.devsuperior.dscatalog.dtos.users.UserUpdateRequest;
 import com.devsuperior.dscatalog.entities.User;
-import com.devsuperior.dscatalog.repositories.RoleRepository;
 import com.devsuperior.dscatalog.repositories.UserRepository;
 import com.devsuperior.dscatalog.services.exceptions.DataBaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 
 import com.devsuperior.dscatalog.services.utils.Util;
-import org.springframework.beans.BeanUtils;
-import org.springframework.boot.json.JsonParseException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -22,11 +19,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.RuntimeOperationsException;
 import javax.persistence.EntityNotFoundException;
 
 @Service
-public class UserService implements IUserService {
+public class UserService implements ImplUserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
