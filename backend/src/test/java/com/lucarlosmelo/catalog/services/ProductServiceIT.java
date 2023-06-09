@@ -1,6 +1,6 @@
 package com.lucarlosmelo.catalog.services;
 
-import com.lucarlosmelo.catalog.dtos.ProductDTO;
+import com.lucarlosmelo.catalog.dtos.products.ProductResponse;
 import com.lucarlosmelo.catalog.repositories.ProductRepository;
 import com.lucarlosmelo.catalog.services.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductServiceIT {
 	
 	@Autowired
-	private ProductService service;
+	private ImplProductService service;
 	
 	@Autowired
 	private ProductRepository repository;
@@ -28,7 +28,7 @@ public class ProductServiceIT {
 	private Long countTotalProducts;
 	
 	@BeforeEach
-	void setUp() throws Exception{
+	void setUp() {
 		existingId = 1L;
 		nonExistingId = 100L;
 		countTotalProducts = 25L;
@@ -42,15 +42,13 @@ public class ProductServiceIT {
 	
 	@Test
 	public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExists() {
-		 Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-			 service.delete(nonExistingId);
-		 });	 
+		 Assertions.assertThrows(ResourceNotFoundException.class, () -> service.delete(nonExistingId));
 	}
 	 
 	@Test
 	public void findAllPagedShouldReturnPageWhenPage0Size10(){
 		PageRequest page = PageRequest.of(0,10);
-		Page<ProductDTO> result = service.findAllPaged(page);
+		Page<ProductResponse> result = service.findAllPaged(page);
 		
 		Assertions.assertFalse(result.isEmpty());
 		Assertions.assertEquals(0, page.getPageNumber());
@@ -60,14 +58,14 @@ public class ProductServiceIT {
 	@Test
 	public void findAllPagedShouldReturnEmptyWhenPageDoesNotExist(){
 		PageRequest page = PageRequest.of(50, 10);
-		Page<ProductDTO> result = service.findAllPaged(page);
+		Page<ProductResponse> result = service.findAllPaged(page);
 		Assertions.assertTrue(result.isEmpty());
 	}
 
 	@Test
 	public void findAllPagedShouldReturnSortedWhenPageDoesNotExist(){
 		PageRequest page = PageRequest.of(0, 10, Sort.by("name"));
-		Page<ProductDTO> result = service.findAllPaged(page);
+		Page<ProductResponse> result = service.findAllPaged(page);
 		Assertions.assertFalse(result.isEmpty());
 		Assertions.assertEquals("Macbook Pro", result.getContent().get(0).getName());
 		Assertions.assertEquals("PC Gamer", result.getContent().get(1).getName());

@@ -1,7 +1,7 @@
 package com.lucarlosmelo.catalog.services;
 
-import com.lucarlosmelo.catalog.dtos.CategoryRequest;
-import com.lucarlosmelo.catalog.dtos.CategoryResponse;
+import com.lucarlosmelo.catalog.dtos.categories.CategoryRequest;
+import com.lucarlosmelo.catalog.dtos.categories.CategoryResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

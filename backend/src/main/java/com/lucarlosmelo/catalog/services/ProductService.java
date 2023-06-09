@@ -1,14 +1,12 @@
 package com.lucarlosmelo.catalog.services;
 
-import java.util.Optional;
-
 import javax.persistence.EntityNotFoundException;
 
-import com.lucarlosmelo.catalog.dtos.ProductDTO;
-import com.lucarlosmelo.catalog.entities.Product;
-import com.lucarlosmelo.catalog.repositories.CategoryRepository;
+import com.lucarlosmelo.catalog.dtos.products.ProductInsertRequest;
+import com.lucarlosmelo.catalog.dtos.products.ProductResponse;
+import com.lucarlosmelo.catalog.dtos.products.ProductUpdateRequest;
 import com.lucarlosmelo.catalog.repositories.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.lucarlosmelo.catalog.services.utils.Util;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -20,45 +18,46 @@ import com.lucarlosmelo.catalog.services.exceptions.DataBaseException;
 import com.lucarlosmelo.catalog.services.exceptions.ResourceNotFoundException;
 
 @Service
-public class ProductService {
+public class ProductService implements ImplProductService{
 
- 	@Autowired
-	private ProductRepository productRepository;
- 	
- 	@Autowired
- 	private CategoryRepository categoryRepository;
- 	
-	@Transactional(readOnly = true)
-	public Page<ProductDTO> findAllPaged(Pageable pageable) {
-		Page<Product> list = productRepository.findAll(pageable);
-		return list.map(x -> new ProductDTO(x, x.getCategories()));
+ 	private final ProductRepository productRepository;
+
+	private final Util util;
+
+	public ProductService(ProductRepository productRepository , Util util) {
+		this.productRepository = productRepository;
+		this.util = util;
 	}
 
 	@Transactional(readOnly = true)
-	public ProductDTO findById(Long id) {
-		Optional<Product> obj = productRepository.findById(id);
-		Product entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-		return new ProductDTO(entity, entity.getCategories());
+	public Page<ProductResponse> findAllPaged(Pageable pageable) {
+		var products = productRepository.findAll(pageable);
+		return products.map(x -> new ProductResponse(x, x.getCategories()));
+	}
+
+	@Transactional(readOnly = true)
+	public ProductResponse findById(Long id) {
+		var findProduct = productRepository.findById(id);
+		var product = findProduct.orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
+		return new ProductResponse(product, product.getCategories());
 	}
 
 	@Transactional
-	public ProductDTO insert(ProductDTO dto) {
-		Product entity = new Product();
-		copyDtoToEntity(dto, entity);
-		entity = productRepository.save(entity);
-		return new ProductDTO(entity);
+	public ProductInsertRequest insert(ProductInsertRequest request) {
+		var copiedProperties = util.copyProperties(request);
+		var product = productRepository.save(copiedProperties);
+		return new ProductInsertRequest(product);
 	}
 
-
 	@Transactional
-	public ProductDTO update(Long id, ProductDTO dto) {
+	public ProductUpdateRequest update(Long id, ProductUpdateRequest request) {
 		try {
-			Product entity = productRepository.getOne(id);
-			entity.setName(dto.getName());
-			entity = productRepository.save(entity);
-			return new ProductDTO(entity);
+			var product = productRepository.getOne(id);
+			util.copyProperties(request, product);
+			product = productRepository.save(product);
+			return new ProductUpdateRequest(product, product.getCategories());
 		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("id not found" + id);
+			throw new ResourceNotFoundException("id não encontrado " + id);
 		}
 
 	}
@@ -68,21 +67,11 @@ public class ProductService {
 			productRepository.deleteById(id);
 		}
 		catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException("id not found" + id);
+			throw new ResourceNotFoundException("id não encontrado " + id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataBaseException("Integrity violation");
+			throw new DataBaseException("VIolação de integridade");
 		}
 	}
 	
-	private void copyDtoToEntity(ProductDTO dto, Product entity) {
-		entity.setName(dto.getName());
-		entity.setDescription(dto.getDescription());		
-		entity.setDate(dto.getDate());		
-		entity.setImgurl(dto.getImgUrl());		
-		entity.setPrice(dto.getPrice());		
-		
-		entity.getCategories().clear();
-		dto.getCategories().forEach(x -> entity.getCategories().add(categoryRepository.getOne(x.getId())));
-	}
-	
+
 }

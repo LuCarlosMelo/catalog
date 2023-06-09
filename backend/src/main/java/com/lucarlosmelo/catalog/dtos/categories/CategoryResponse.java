@@ -1,4 +1,4 @@
-package com.lucarlosmelo.catalog.dtos;
+package com.lucarlosmelo.catalog.dtos.categories;
 
 import com.lucarlosmelo.catalog.entities.Category;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

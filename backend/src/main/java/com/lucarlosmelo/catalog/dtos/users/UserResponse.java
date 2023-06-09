@@ -1,6 +1,5 @@
 package com.lucarlosmelo.catalog.dtos.users;
 
-import com.lucarlosmelo.catalog.dtos.RoleDTO;
 import com.lucarlosmelo.catalog.entities.User;
 
 import java.util.HashSet;
@@ -12,14 +11,14 @@ public class UserResponse {
     private final String firstName;
     private final String lastName;
     private final String email;
-    private final Set<RoleDTO> roles = new HashSet<>();
+    private final Set<RoleRequest> roles = new HashSet<>();
 
     public UserResponse(User user) {
         id = user.getId();
         firstName = user.getFirstName();
         lastName = user.getLastName();
         email = user.getEmail();
-        user.getRoles().forEach(role -> this.roles.add(new RoleDTO()));
+        user.getRoles().forEach(role -> this.roles.add(new RoleRequest()));
     }
 
     public Long getId() {
@@ -38,7 +37,7 @@ public class UserResponse {
         return email;
     }
 
-    public Set<RoleDTO> getRoles() {
+    public Set<RoleRequest> getRoles() {
         return roles;
     }
 }

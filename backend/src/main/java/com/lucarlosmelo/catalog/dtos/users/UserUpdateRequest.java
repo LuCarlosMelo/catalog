@@ -1,6 +1,5 @@
 package com.lucarlosmelo.catalog.dtos.users;
 
-import com.lucarlosmelo.catalog.dtos.RoleDTO;
 import com.lucarlosmelo.catalog.entities.User;
 import com.lucarlosmelo.catalog.services.validation.UserUpdateValid;
 
@@ -22,14 +21,14 @@ public class UserUpdateRequest {
 	@Email
 	private String email;
 
-	private Set<RoleDTO> roles = new HashSet<>();
+	private Set<RoleRequest> roles = new HashSet<>();
 
 	public UserUpdateRequest(){}
 	public UserUpdateRequest(User user) {
 		firstName = user.getFirstName();
 		lastName = user.getLastName();
 		email = user.getEmail();
-		user.getRoles().forEach(role -> this.roles.add(new RoleDTO()));
+		user.getRoles().forEach(role -> this.roles.add(new RoleRequest()));
 	}
 
 	public String getFirstName() {
@@ -56,7 +55,7 @@ public class UserUpdateRequest {
 		this.email = email;
 	}
 
-	public Set<RoleDTO> getRoles() {
+	public Set<RoleRequest> getRoles() {
 		return roles;
 	}
 

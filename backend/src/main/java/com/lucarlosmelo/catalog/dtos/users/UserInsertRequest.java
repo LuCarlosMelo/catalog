@@ -1,6 +1,5 @@
 package com.lucarlosmelo.catalog.dtos.users;
 
-import com.lucarlosmelo.catalog.dtos.RoleDTO;
 import com.lucarlosmelo.catalog.entities.User;
 import com.lucarlosmelo.catalog.services.validation.UserInsertValid;
 
@@ -28,7 +27,7 @@ public class UserInsertRequest implements Serializable {
     private String email;
 
     private String password;
-    private Set<RoleDTO> roles = new HashSet<>();
+    private Set<RoleRequest> roles = new HashSet<>();
 
     public UserInsertRequest() {
     }
@@ -45,7 +44,7 @@ public class UserInsertRequest implements Serializable {
         firstName = user.getFirstName();
         lastName = user.getLastName();
         email = user.getEmail();
-        user.getRoles().forEach(role -> this.roles.add(new RoleDTO()));
+        user.getRoles().forEach(role -> this.roles.add(new RoleRequest()));
     }
     public Long getId() {
         return id;
@@ -87,7 +86,7 @@ public class UserInsertRequest implements Serializable {
         this.password = password;
     }
 
-    public Set<RoleDTO> getRoles() {
+    public Set<RoleRequest> getRoles() {
         return roles;
     }
 }

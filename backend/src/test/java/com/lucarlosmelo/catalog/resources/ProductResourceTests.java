@@ -14,6 +14,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import com.lucarlosmelo.catalog.dtos.products.ProductResponse;
+import com.lucarlosmelo.catalog.dtos.products.ProductUpdateRequest;
+import com.lucarlosmelo.catalog.services.ImplProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import com.lucarlosmelo.catalog.dtos.ProductDTO;
-import com.lucarlosmelo.catalog.services.ProductService;
+import com.lucarlosmelo.catalog.dtos.products.ProductInsertRequest;
 import com.lucarlosmelo.catalog.services.exceptions.DataBaseException;
 import com.lucarlosmelo.catalog.services.exceptions.ResourceNotFoundException;
 import com.lucarlosmelo.catalog.tests.Factory;
@@ -40,13 +42,15 @@ public class ProductResourceTests {
 	private ObjectMapper objectMapper;
 
 	@MockBean
-	private ProductService service;
+	private ImplProductService service;
 
 	private long existsId;
 	private long nonExistsId;
 	private long dependentId;
-	private ProductDTO productDTO;
-	private PageImpl<ProductDTO> page;
+	private ProductResponse productResponse;
+	private ProductInsertRequest productInsertRequest;
+	private ProductUpdateRequest productUpdateRequest;
+	private PageImpl<ProductResponse> page;
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -54,17 +58,17 @@ public class ProductResourceTests {
 		nonExistsId = 100L;
 		dependentId = 3L;
 
-		productDTO = Factory.createProductDTO();
-		page = new PageImpl<>(List.of(productDTO));
+		productResponse = Factory.createProductResponse();
+		page = new PageImpl<>(List.of(productResponse));
 
 		when(service.findAllPaged(any())).thenReturn(page);
 
-		when(service.findById(existsId)).thenReturn(productDTO);
+		when(service.findById(existsId)).thenReturn(productResponse);
 		when(service.findById(nonExistsId)).thenThrow(ResourceNotFoundException.class);
 
-		when(service.insert(any())).thenReturn(productDTO);
+		when(service.insert(any())).thenReturn(productInsertRequest);
 
-		when(service.update(eq(existsId), any())).thenReturn(productDTO);
+		when(service.update(eq(existsId), any())).thenReturn(productUpdateRequest);
 		when(service.update(eq(nonExistsId), any())).thenThrow(ResourceNotFoundException.class);
 
 		doNothing().when(service).delete(existsId);
@@ -95,7 +99,7 @@ public class ProductResourceTests {
 
 	@Test
 	public void updateShouldReturnProductWhenIdExists() throws Exception {
-		String jsonBody = objectMapper.writeValueAsString(productDTO);
+		String jsonBody = objectMapper.writeValueAsString(productResponse);
 
 		ResultActions result = mockMvc.perform(put("/products/{id}", existsId).content(jsonBody)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
@@ -108,7 +112,7 @@ public class ProductResourceTests {
 
 	@Test
 	public void updateShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
-		String jsonBody = objectMapper.writeValueAsString(productDTO);
+		String jsonBody = objectMapper.writeValueAsString(productResponse);
 
 		ResultActions result = mockMvc.perform(put("/products/{id}", nonExistsId).content(jsonBody)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
@@ -116,10 +120,10 @@ public class ProductResourceTests {
 	}
 
 	@Test
-	public void insertShouldReturnProductDTOCreated() throws Exception {
-		String jsonBody = objectMapper.writeValueAsString(productDTO);
+	public void insertShouldReturnproductResponseCreated() throws Exception {
+		String jsonBody = objectMapper.writeValueAsString(productResponse);
 
-		ResultActions result = mockMvc.perform(post("/products", productDTO).content(jsonBody)
+		ResultActions result = mockMvc.perform(post("/products", productResponse).content(jsonBody)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON));
 		result.andExpect(status().isCreated());
 		result.andExpect(jsonPath("$.id").exists());

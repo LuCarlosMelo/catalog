@@ -1,25 +1,25 @@
-package com.lucarlosmelo.catalog.dtos;
+package com.lucarlosmelo.catalog.dtos.users;
 
 import com.lucarlosmelo.catalog.entities.Role;
 
 import java.io.Serializable;
 
-public class RoleDTO implements Serializable {
+public class RoleRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	private String authority;
 
-	public RoleDTO() {
+	public RoleRequest() {
 	}
 
-	public RoleDTO(Long id, String authority) {
+	public RoleRequest(Long id, String authority) {
 		this.id = id;
 		this.authority = authority;
 	}
 
 
-	public RoleDTO(Role role) {
+	public RoleRequest(Role role) {
 		super();
 		id = role.getId();
 		authority = role.getAuthority();

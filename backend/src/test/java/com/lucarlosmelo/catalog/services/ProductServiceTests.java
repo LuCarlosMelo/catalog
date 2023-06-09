@@ -11,7 +11,9 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
-import com.lucarlosmelo.catalog.dtos.ProductDTO;
+import com.lucarlosmelo.catalog.dtos.products.ProductInsertRequest;
+import com.lucarlosmelo.catalog.dtos.products.ProductResponse;
+import com.lucarlosmelo.catalog.dtos.products.ProductUpdateRequest;
 import com.lucarlosmelo.catalog.entities.Category;
 import com.lucarlosmelo.catalog.entities.Product;
 import com.lucarlosmelo.catalog.repositories.CategoryRepository;
@@ -38,7 +40,7 @@ import com.lucarlosmelo.catalog.tests.Factory;
 public class ProductServiceTests {
 
 	@InjectMocks
-	private ProductService service;
+	private ImplProductService service;
 
 	@Mock
 	private ProductRepository repository;
@@ -52,8 +54,10 @@ public class ProductServiceTests {
 	private PageImpl<Product> page;
 	private Product product;
 	private Category category;
-	private ProductDTO productDto;
+	private ProductResponse productResponse;
+	private ProductInsertRequest productInsertRequest;
 
+	private ProductUpdateRequest productUpdateRequest;
 	@BeforeEach
 	void setUp() throws Exception {
 		existingId = 1L;
@@ -62,7 +66,7 @@ public class ProductServiceTests {
 		product = Factory.createProduct();
 		page = new PageImpl<>(List.of(product));
 		category = Factory.createCategory();
-		productDto = Factory.createProductDTO();
+		productResponse = Factory.createProductResponse();
 
 		doNothing().when(repository).deleteById(nonExistingId);
 		doThrow(ResourceNotFoundException.class).when(repository).deleteById(nonExistingId);
@@ -86,7 +90,7 @@ public class ProductServiceTests {
 	@Test
 	public void findAllShouldReturnPage() {
 		Pageable pageable = PageRequest.of(0, 10);
-		Page<ProductDTO> dto = service.findAllPaged(pageable);
+		Page<ProductResponse> dto = service.findAllPaged(pageable);
 		Assertions.assertNotNull(dto);
 		verify(repository).findAll(pageable);
 
@@ -94,20 +98,20 @@ public class ProductServiceTests {
 
 	@Test
 	public void findByIdShoulReturnProductDTOWhenIdExists() {
-		ProductDTO obj = service.findById(existingId);
+		ProductResponse obj = service.findById(existingId);
 		Assertions.assertNotNull(obj);
 		verify(repository).findById(existingId);
 	}
 
 	@Test
 	public void updateShouldReturnProductDTOWhenIdExists() {
-		Assertions.assertNotNull(service.update(existingId, productDto));
+		Assertions.assertNotNull(service.update(existingId, productUpdateRequest));
 	}
 	
 	@Test
 	public void updateShouldReturnThrowResourceNotFoundExceptionWhenIdDoesNotExists() {
 		Assertions.assertThrows(ResourceNotFoundException.class, () -> {
-			service.update(nonExistingId, productDto);
+			service.update(nonExistingId, productUpdateRequest);
 		});
 	}
 		

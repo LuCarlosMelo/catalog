@@ -1,8 +1,8 @@
 package com.lucarlosmelo.catalog.resources;
 
-import com.lucarlosmelo.catalog.dtos.CategoryResponse;
+import com.lucarlosmelo.catalog.dtos.categories.CategoryResponse;
 import com.lucarlosmelo.catalog.services.ImplCategoryService;
-import com.lucarlosmelo.catalog.dtos.CategoryRequest;
+import com.lucarlosmelo.catalog.dtos.categories.CategoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,4 +1,4 @@
-package com.lucarlosmelo.catalog.dtos;
+package com.lucarlosmelo.catalog.dtos.categories;
 
 import java.io.Serializable;
 

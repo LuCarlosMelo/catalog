@@ -1,8 +1,9 @@
 package com.lucarlosmelo.catalog.resources;
 
-import com.lucarlosmelo.catalog.dtos.ProductDTO;
-import com.lucarlosmelo.catalog.services.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.lucarlosmelo.catalog.dtos.products.ProductInsertRequest;
+import com.lucarlosmelo.catalog.dtos.products.ProductResponse;
+import com.lucarlosmelo.catalog.dtos.products.ProductUpdateRequest;
+import com.lucarlosmelo.catalog.services.ImplProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -10,40 +11,42 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.net.URI;
 
 @RestController
 @RequestMapping(value = "/products")
 public class ProductResource {
 
-	@Autowired
-	private ProductService service;
+	private final ImplProductService service;
+
+	public ProductResource(ImplProductService service) {
+		this.service = service;
+	}
 
 	@GetMapping
-	public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable) {
-		Page<ProductDTO> list = service.findAllPaged(pageable);
-		return ResponseEntity.ok(list);
+	public ResponseEntity<Page<ProductResponse>> findAll(Pageable pageable) {
+		var products = service.findAllPaged(pageable);
+		return ResponseEntity.ok(products);
 	}  
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
-		ProductDTO dto = service.findById(id);
-		return ResponseEntity.ok(dto);
+	public ResponseEntity<ProductResponse> findById(@PathVariable Long id) {
+		var product = service.findById(id);
+		return ResponseEntity.ok(product);
 	}
 	
 	@PostMapping 
-	public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO dto){
-		dto = service.insert(dto);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(dto.getId()).toUri();
-		return ResponseEntity.created(uri).body(dto);
+	public ResponseEntity<ProductInsertRequest> insert(@Valid @RequestBody ProductInsertRequest request){
+		var product = service.insert(request);
+		var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(product.getId()).toUri();
+		return ResponseEntity.created(uri).body(product);
 		
 	}
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<ProductDTO> update(@Valid @PathVariable Long id, @RequestBody ProductDTO dto){
-		dto = service.update(id, dto);
-		return ResponseEntity.ok(dto);
+	public ResponseEntity<ProductUpdateRequest> update(@PathVariable Long id, @RequestBody ProductUpdateRequest request){
+		var product = service.update(id, request);
+		return ResponseEntity.ok(product);
 	}
 	 
 	@DeleteMapping(value = "/{id}")
@@ -51,5 +54,4 @@ public class ProductResource {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-
 }

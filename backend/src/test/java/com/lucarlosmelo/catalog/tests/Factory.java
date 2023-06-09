@@ -2,7 +2,7 @@ package com.lucarlosmelo.catalog.tests;
 
 import java.time.Instant;
 
-import com.lucarlosmelo.catalog.dtos.ProductDTO;
+import com.lucarlosmelo.catalog.dtos.products.ProductResponse;
 import com.lucarlosmelo.catalog.entities.Category;
 import com.lucarlosmelo.catalog.entities.Product;
 
@@ -14,9 +14,9 @@ public class Factory {
 		
 	}
 	
-	public static ProductDTO createProductDTO() {
+	public static ProductResponse createProductResponse() {
 		Product p = createProduct();
-		return new ProductDTO(p, p.getCategories());
+		return new ProductResponse(p, p.getCategories());
 	}
 	
 	public static Category createCategory() {

@@ -2,9 +2,9 @@ package com.lucarlosmelo.catalog.services;
 
 import javax.persistence.EntityNotFoundException;
 
-import com.lucarlosmelo.catalog.dtos.CategoryResponse;
+import com.lucarlosmelo.catalog.dtos.categories.CategoryResponse;
 import com.lucarlosmelo.catalog.services.utils.Util;
-import com.lucarlosmelo.catalog.dtos.CategoryRequest;
+import com.lucarlosmelo.catalog.dtos.categories.CategoryRequest;
 import com.lucarlosmelo.catalog.entities.Category;
 import com.lucarlosmelo.catalog.repositories.CategoryRepository;
 import org.springframework.dao.DataIntegrityViolationException;
