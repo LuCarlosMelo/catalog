@@ -30,23 +30,26 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Value("${jwt.duration}")
     private Integer jwtDuration  ;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtAccessTokenConverter accessTokenConverter;
+    private final JwtAccessTokenConverter accessTokenConverter;
 
-    @Autowired
-    private JwtTokenStore tokenStore;
+    private final JwtTokenStore tokenStore;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private JwtTokenEnhancer tokenEnhancer;
+    private final JwtTokenEnhancer tokenEnhancer;
+
+    public AuthorizationServerConfig(BCryptPasswordEncoder passwordEncoder, JwtAccessTokenConverter accessTokenConverter, JwtTokenStore tokenStore, AuthenticationManager authenticationManager, JwtTokenEnhancer tokenEnhancer) {
+        this.passwordEncoder = passwordEncoder;
+        this.accessTokenConverter = accessTokenConverter;
+        this.tokenStore = tokenStore;
+        this.authenticationManager = authenticationManager;
+        this.tokenEnhancer = tokenEnhancer;
+    }
 
     @Override
-    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+    public void configure(AuthorizationServerSecurityConfigurer security) {
         security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
     }
 
@@ -61,9 +64,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
 
-        TokenEnhancerChain chain = new TokenEnhancerChain();
+        var chain = new TokenEnhancerChain();
         chain.setTokenEnhancers(Arrays.asList(accessTokenConverter, tokenEnhancer));
 
             endpoints.authenticationManager(authenticationManager)
