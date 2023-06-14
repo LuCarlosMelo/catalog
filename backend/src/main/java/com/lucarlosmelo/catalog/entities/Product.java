@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,11 +20,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tb_product")
 public class Product implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final Long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private UUID id;
 	private String name;
 	
 	@Column(columnDefinition = "TEXT")
@@ -44,7 +45,7 @@ public class Product implements Serializable {
 
 	}
 
-	public Product(Long id, String name,Double price, Instant date, String description, String imgUrl) {
+	public Product(UUID id, String name,Double price, Instant date, String description, String imgUrl) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
@@ -53,11 +54,11 @@ public class Product implements Serializable {
 		this.imgUrl = imgUrl;
 	}
 	
-	public Long getId() {
+	public UUID getId() {
 		return id;
 	}
 	
-	public void setId(Long id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 	

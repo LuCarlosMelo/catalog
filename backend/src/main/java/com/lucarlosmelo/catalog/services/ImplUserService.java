@@ -8,18 +8,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.UUID;
+
 public interface ImplUserService extends UserDetailsService {
 
     Page<UserResponse> findAllPaged(Pageable pageable);
 
-    UserResponse findById(Long id);
+    UserResponse findById(UUID id);
 
     User findByEmail(String email);
 
     UserInsertRequest insert(UserInsertRequest dto);
 
-    UserUpdateRequest update(Long id, UserUpdateRequest dto);
+    UserUpdateRequest update(UUID id, UserUpdateRequest dto);
 
-    void delete(Long id);
+    void delete(UUID id);
 
 }

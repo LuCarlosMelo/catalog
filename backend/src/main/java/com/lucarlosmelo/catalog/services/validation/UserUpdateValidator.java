@@ -27,17 +27,17 @@ public class UserUpdateValidator implements ConstraintValidator<UserUpdateValid,
     }
 
     @Override
-    public boolean isValid(UserUpdateRequest dto, ConstraintValidatorContext context) {
+    public boolean isValid(UserUpdateRequest userUpdateRequest, ConstraintValidatorContext context) {
 
         var uriVars = (Map<String,String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        long userId = Long.parseLong(uriVars.get("id"));
+        var userId = uriVars.get("id");
 
-        List<FieldMessage> list = new ArrayList<>();
+        var list = new ArrayList<FieldMessage>();
 
-        User user = userRepository.findByEmail(dto.getEmail());
+        var user = userRepository.findByEmail(userUpdateRequest.getEmail());
 
-        if(user != null && userId != user.getId()){
-            list.add(new FieldMessage("email", "Email já existe"));
+        if(user != null && userId != user.getId().toString()){
+             list.add(new FieldMessage("email", "Email já existe"));
         }
 
         for (FieldMessage e : list) {

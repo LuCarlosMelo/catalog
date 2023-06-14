@@ -9,13 +9,14 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 
 @UserInsertValid
 public class UserInsertRequest implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final Long serialVersionUID = 1L;
 
-    private Long id;
+    private UUID id;
 
     @Size(min = 3, max = 30)
     @NotBlank(message = "Campo obrigatório")
@@ -32,7 +33,7 @@ public class UserInsertRequest implements Serializable {
     public UserInsertRequest() {
     }
 
-    public UserInsertRequest(Long id, String firstName, String lastName, String email) {
+    public UserInsertRequest(UUID id, String firstName, String lastName, String email) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -46,11 +47,11 @@ public class UserInsertRequest implements Serializable {
         email = user.getEmail();
         user.getRoles().forEach(role -> this.roles.add(new RoleRequest()));
     }
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

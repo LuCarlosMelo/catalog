@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.lucarlosmelo.catalog.services.exceptions.DataBaseException;
 import com.lucarlosmelo.catalog.services.exceptions.ResourceNotFoundException;
 
+import java.util.UUID;
+
 @Service
 public class ProductService implements ImplProductService{
 
@@ -32,11 +34,11 @@ public class ProductService implements ImplProductService{
 	@Transactional(readOnly = true)
 	public Page<ProductResponse> findAllPaged(Pageable pageable) {
 		var products = productRepository.findAll(pageable);
-		return products.map(x -> new ProductResponse(x, x.getCategories()));
+		return products.map(product -> new ProductResponse(product, product.getCategories()));
 	}
 
 	@Transactional(readOnly = true)
-	public ProductResponse findById(Long id) {
+	public ProductResponse findById(UUID id) {
 		var findProduct = productRepository.findById(id);
 		var product = findProduct.orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
 		return new ProductResponse(product, product.getCategories());
@@ -50,7 +52,7 @@ public class ProductService implements ImplProductService{
 	}
 
 	@Transactional
-	public ProductUpdateRequest update(Long id, ProductUpdateRequest request) {
+	public ProductUpdateRequest update(UUID id, ProductUpdateRequest request) {
 		try {
 			var product = productRepository.getOne(id);
 			util.copyProperties(request, product);
@@ -62,7 +64,7 @@ public class ProductService implements ImplProductService{
 
 	}
 
-	public void delete(Long id) {
+	public void delete(UUID id) {
 		try {
 			productRepository.deleteById(id);
 		}

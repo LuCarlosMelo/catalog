@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.UUID;
 
 @Service
 public class UserService implements ImplUserService {
@@ -42,7 +43,7 @@ public class UserService implements ImplUserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponse findById(Long id) {
+    public UserResponse findById(UUID id) {
         var obj = userRepository.findById(id);
         var entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
         return new UserResponse(entity);
@@ -54,19 +55,19 @@ public class UserService implements ImplUserService {
     }
 
     @Transactional
-    public UserInsertRequest insert(UserInsertRequest userInsertDTO) {
+    public UserInsertRequest insert(UserInsertRequest request) {
         var entity = new User();
-        util.copyProperties(userInsertDTO, entity);
-        entity.setPassword(passwordEncoder.encode(userInsertDTO.getPassword()));
+        util.copyProperties(request, entity);
+        entity.setPassword(passwordEncoder.encode(request.getPassword()));
         entity = userRepository.save(entity);
         return new UserInsertRequest(entity);
     }
 
     @Transactional
-    public UserUpdateRequest update(Long id, UserUpdateRequest userUpdateRequest) {
+    public UserUpdateRequest update(UUID id, UserUpdateRequest request) {
         try {
             var user = userRepository.getOne(id);
-            util.copyProperties(userUpdateRequest, user);
+            util.copyProperties(request, user);
             user = userRepository.save(user);
             return new UserUpdateRequest(user);
         } catch (EntityNotFoundException e) {
@@ -75,7 +76,7 @@ public class UserService implements ImplUserService {
 
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
         try {
             userRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {

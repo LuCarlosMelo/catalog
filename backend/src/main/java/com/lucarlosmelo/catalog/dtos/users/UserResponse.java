@@ -4,10 +4,11 @@ import com.lucarlosmelo.catalog.entities.User;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public class UserResponse {
 
-    private final Long id;
+    private final UUID id;
     private final String firstName;
     private final String lastName;
     private final String email;
@@ -21,7 +22,7 @@ public class UserResponse {
         user.getRoles().forEach(role -> this.roles.add(new RoleRequest()));
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 

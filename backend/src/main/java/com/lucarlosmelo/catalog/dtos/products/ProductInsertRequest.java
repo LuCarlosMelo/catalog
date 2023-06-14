@@ -11,11 +11,12 @@ import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @JsonSerialize
 public class ProductInsertRequest {
 
-	private Long id;
+	private UUID id;
 
 	@Size(min = 4, max = 10)
 	@NotBlank(message = "Campo requerido")
@@ -44,11 +45,11 @@ public class ProductInsertRequest {
 		this.date = product.getDate();
 	}
 
-	public Long getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 

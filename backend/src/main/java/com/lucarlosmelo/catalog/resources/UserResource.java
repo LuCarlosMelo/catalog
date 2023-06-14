@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -29,7 +30,7 @@ public class UserResource {
 	}  
 	
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<UserResponse> findById(@PathVariable Long id) {
+	public ResponseEntity<UserResponse> findById(@PathVariable UUID id) {
 		var user = service.findById(id);
 		return ResponseEntity.ok(user);
 	}
@@ -43,13 +44,13 @@ public class UserResource {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<UserUpdateRequest> update(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest userUpdateRequest){
+	public ResponseEntity<UserUpdateRequest> update(@PathVariable UUID id, @Valid @RequestBody UserUpdateRequest userUpdateRequest){
 		var user = service.update(id, userUpdateRequest);
 		return ResponseEntity.ok(user);
 	}
 	 
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id){
+	public ResponseEntity<Void> delete(@PathVariable UUID id){
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}

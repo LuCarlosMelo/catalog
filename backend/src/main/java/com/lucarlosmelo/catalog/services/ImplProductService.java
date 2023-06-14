@@ -6,16 +6,18 @@ import com.lucarlosmelo.catalog.dtos.products.ProductUpdateRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.UUID;
+
 public interface ImplProductService {
 
     Page<ProductResponse> findAllPaged(Pageable pageable);
 
-    ProductResponse findById(Long id);
+    ProductResponse findById(UUID id);
 
     ProductInsertRequest insert(ProductInsertRequest request);
 
-    ProductUpdateRequest update(Long id, ProductUpdateRequest request);
+    ProductUpdateRequest update(UUID id, ProductUpdateRequest request);
 
-    void delete(Long id);
+    void delete(UUID id);
 
 }

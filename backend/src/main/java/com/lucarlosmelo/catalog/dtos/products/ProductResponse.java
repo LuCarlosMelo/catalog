@@ -6,13 +6,16 @@ import com.lucarlosmelo.catalog.entities.Category;
 import com.lucarlosmelo.catalog.entities.Product;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @JsonSerialize
 public class ProductResponse {
-    private Long id;
+    private UUID id;
     private String name;
     private String description;
     private Double price;
@@ -31,7 +34,7 @@ public class ProductResponse {
         categories.forEach(category -> this.categories.add(new CategoryRequest(category)));
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
     public String getName() {
