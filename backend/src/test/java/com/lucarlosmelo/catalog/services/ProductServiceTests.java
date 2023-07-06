@@ -40,7 +40,7 @@ import com.lucarlosmelo.catalog.tests.Factory;
 public class ProductServiceTests {
 
 	@InjectMocks
-	private ImplProductService service;
+	private ProductService service;
 
 	@Mock
 	private ProductRepository repository;

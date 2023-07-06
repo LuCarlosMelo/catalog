@@ -1,57 +1,45 @@
 package com.lucarlosmelo.catalog.dtos.products;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.lucarlosmelo.catalog.dtos.categories.CategoryRequest;
-import com.lucarlosmelo.catalog.entities.Product;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-@JsonSerialize
-public class ProductInsertRequest {
 
-	private UUID id;
+
+public class ProductInsertRequest implements Serializable {
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	@Size(min = 4, max = 10)
 	@NotBlank(message = "Campo requerido")
+	@Schema(description = "Product name", example = "PC Gamer")
 	private String name;
 	@NotBlank(message = "Campo requerido")
-
+	@Schema(description = "Product description", example = "SSD 50GB, Intel Core I5")
 	private String description;
+
 	@Positive(message = "Preço deve ser positivo")
+	@Schema(description = "Product price", example = "200.00",required = true)
 	private Double price;
+
+	@Schema(description = "Product image URL", example = "www.google.com/imagens")
 	private String imgUrl;
+
 	@PastOrPresent(message = "Não pode ser data futura")
+	@Schema(description = "Product insertion date", example = "2023-07-05T20:07:51.969Z", required = true)
 	private Instant date;
-	
+
+	@Schema(description = "List of the product categorias", example = "[{\"id\": 1}]")
 	private List<CategoryRequest> categories = new ArrayList<>();
-	
-	public ProductInsertRequest() {
-		
-	}
-
-	public ProductInsertRequest(Product product) {
-		this.id = product.getId();
-		this.name = product.getName();
-		this.description = product.getDescription();
-		this.price = product.getPrice();
-		this.imgUrl = product.getImgurl();
-		this.date = product.getDate();
-	}
-
-	public UUID getId() {
-		return id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;

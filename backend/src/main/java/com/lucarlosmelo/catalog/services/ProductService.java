@@ -1,79 +1,23 @@
 package com.lucarlosmelo.catalog.services;
 
-import javax.persistence.EntityNotFoundException;
-
 import com.lucarlosmelo.catalog.dtos.products.ProductInsertRequest;
 import com.lucarlosmelo.catalog.dtos.products.ProductResponse;
 import com.lucarlosmelo.catalog.dtos.products.ProductUpdateRequest;
-import com.lucarlosmelo.catalog.repositories.ProductRepository;
-import com.lucarlosmelo.catalog.services.utils.Util;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.lucarlosmelo.catalog.services.exceptions.DataBaseException;
-import com.lucarlosmelo.catalog.services.exceptions.ResourceNotFoundException;
 
 import java.util.UUID;
 
-@Service
-public class ProductService implements ImplProductService{
+public interface ProductService {
 
- 	private final ProductRepository productRepository;
+    Page<ProductResponse> findAllPaged(Pageable pageable);
 
-	private final Util util;
+    ProductResponse findById(UUID id);
 
-	public ProductService(ProductRepository productRepository , Util util) {
-		this.productRepository = productRepository;
-		this.util = util;
-	}
+    ProductResponse insert(ProductInsertRequest request);
 
-	@Transactional(readOnly = true)
-	public Page<ProductResponse> findAllPaged(Pageable pageable) {
-		var products = productRepository.findAll(pageable);
-		return products.map(product -> new ProductResponse(product, product.getCategories()));
-	}
+    ProductResponse update(UUID id, ProductUpdateRequest request);
 
-	@Transactional(readOnly = true)
-	public ProductResponse findById(UUID id) {
-		var findProduct = productRepository.findById(id);
-		var product = findProduct.orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado"));
-		return new ProductResponse(product, product.getCategories());
-	}
-
-	@Transactional
-	public ProductInsertRequest insert(ProductInsertRequest request) {
-		var copiedProperties = util.copyProperties(request);
-		var product = productRepository.save(copiedProperties);
-		return new ProductInsertRequest(product);
-	}
-
-	@Transactional
-	public ProductUpdateRequest update(UUID id, ProductUpdateRequest request) {
-		try {
-			var product = productRepository.getOne(id);
-			util.copyProperties(request, product);
-			product = productRepository.save(product);
-			return new ProductUpdateRequest(product, product.getCategories());
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("id não encontrado " + id);
-		}
-
-	}
-
-	public void delete(UUID id) {
-		try {
-			productRepository.deleteById(id);
-		}
-		catch (EmptyResultDataAccessException e) {
-			throw new ResourceNotFoundException("id não encontrado " + id);
-		} catch (DataIntegrityViolationException e) {
-			throw new DataBaseException("VIolação de integridade");
-		}
-	}
-	
+    void delete(UUID id);
 
 }

@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductServiceIT {
 	
 	@Autowired
-	private ImplProductService service;
+	private ProductService service;
 	
 	@Autowired
 	private ProductRepository repository;

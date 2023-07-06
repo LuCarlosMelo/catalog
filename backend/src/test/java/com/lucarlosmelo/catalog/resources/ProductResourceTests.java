@@ -16,7 +16,7 @@ import java.util.List;
 
 import com.lucarlosmelo.catalog.dtos.products.ProductResponse;
 import com.lucarlosmelo.catalog.dtos.products.ProductUpdateRequest;
-import com.lucarlosmelo.catalog.services.ImplProductService;
+import com.lucarlosmelo.catalog.services.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class ProductResourceTests {
 	private ObjectMapper objectMapper;
 
 	@MockBean
-	private ImplProductService service;
+	private ProductService service;
 
 	private long existsId;
 	private long nonExistsId;

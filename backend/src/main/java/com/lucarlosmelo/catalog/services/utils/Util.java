@@ -10,6 +10,7 @@ import com.lucarlosmelo.catalog.entities.Product;
 import com.lucarlosmelo.catalog.entities.User;
 import com.lucarlosmelo.catalog.repositories.CategoryRepository;
 import com.lucarlosmelo.catalog.repositories.RoleRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class Util {
         userUpdateRequest.getRoles().forEach(role -> user.getRoles().add(roleRepository.getOne(role.getId())));
     }
 
-    public CategoryRequest copyProperties(CategoryRequest request, Category category){
+    public CategoryRequest copyProperties(CategoryRequest request, Category category) {
         category.setName(request.getName());
         category = categoryRepository.save(category);
         return new CategoryRequest(category);
@@ -49,10 +50,12 @@ public class Util {
         return product;
     }
 
-    public void copyProperties(ProductUpdateRequest request, Product product){
+    public void copyProperties(ProductUpdateRequest request, Product product) {
         updatesValid(request, product);
-        product.getCategories().clear();
-        request.getCategories().forEach(x -> product.getCategories().add(categoryRepository.getOne(x.getId())));
+        if(!request.getCategories().isEmpty()){
+            product.getCategories().clear();
+            request.getCategories().forEach(x -> product.getCategories().add(categoryRepository.getOne(x.getId())));
+        }
     }
 
     private void updatesValid(UserUpdateRequest request, User user) {
@@ -67,22 +70,23 @@ public class Util {
         }
     }
 
-    private void updatesValid(ProductUpdateRequest request, Product product){
-        if(request.getName() != null && !request.getName().isBlank()){
+    private void updatesValid(ProductUpdateRequest request, Product product) {
+        if (StringUtils.isNotBlank(request.getName())) {
             product.setName(request.getName());
         }
-        if (request.getDescription() != null && !request.getName().isBlank()){
+        if (StringUtils.isNotBlank(request.getDescription())) {
             product.setDescription(request.getDescription());
         }
-        if (request.getPrice() != null && !request.getName().isBlank()){
+        if (request.getPrice() != null) {
             product.setPrice(request.getPrice());
         }
-        if(request.getImgUrl() != null) {
+        if (request.getImgUrl() != null) {
             product.setImgurl(request.getImgUrl());
         }
+
     }
 
-    private Product copyPropertiesWithoutCategories(ProductInsertRequest request){
+    private Product copyPropertiesWithoutCategories(ProductInsertRequest request) {
         var product = new Product();
         product.setName(request.getName());
         product.setDescription(request.getDescription());
