@@ -1,8 +1,15 @@
 package com.lucarlosmelo.catalog.resources;
 
 import com.lucarlosmelo.catalog.dtos.categories.CategoryResponse;
+import com.lucarlosmelo.catalog.resources.exceptions.StandardError;
 import com.lucarlosmelo.catalog.services.ImplCategoryService;
 import com.lucarlosmelo.catalog.dtos.categories.CategoryRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,39 +28,80 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequestMapping(value = "/categories")
 public class CategoryResource {
 
-	@Autowired
-	private ImplCategoryService categoryService;
+    @Autowired
+    private ImplCategoryService categoryService;
 
-	@GetMapping
-	public ResponseEntity<Page<CategoryResponse>> findAll(Pageable pageable ) {
-		var categories = categoryService.findAllPaged(pageable);
-		return ResponseEntity.ok(categories);
-	}  
-	
-	@GetMapping(value = "/{id}")
-	public ResponseEntity<CategoryResponse> findById(@PathVariable Long id) {
-		var category = categoryService.findById(id);
-		return ResponseEntity.ok(category);
-	}
-	
-	@PostMapping 
-	public ResponseEntity<CategoryRequest> insert(@RequestBody CategoryRequest categoryRequest){
-		var category = categoryService.insert(categoryRequest);
-		var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(category.getId()).toUri();
-		return ResponseEntity.created(uri).body(category);
-	}
-	
-	@PutMapping(value = "/{id}")
-	public ResponseEntity<CategoryRequest> update(@PathVariable Long id, @RequestBody CategoryRequest category){
-		category = categoryService.update(id, category);
-		return ResponseEntity.ok(category);
-	}
-	
-	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id){
-		categoryService.delete(id);
-		return ResponseEntity.noContent().build();
-	}
+    @GetMapping
+    @Operation(summary = "Get all categories paginated")
+    @ApiResponse(responseCode = "200", description = "Sucessful")
+    public ResponseEntity<Page<CategoryResponse>> findAll(Pageable pageable) {
+        var categories = categoryService.findAllPaged(pageable);
+        return ResponseEntity.ok(categories);
+    }
+
+    @GetMapping(value = "/{id}")
+	@Operation(summary = "Get category by ID")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Sucessful"),
+			@ApiResponse(responseCode = "404", description = "Not Found",
+					content = @Content(schema = @Schema(implementation = StandardError.class)))})
+    public ResponseEntity<CategoryResponse> findById(@PathVariable Long id) {
+        var category = categoryService.findById(id);
+        return ResponseEntity.ok(category);
+    }
+
+    @PostMapping
+	@Operation(summary = "Insert category by ID",
+			security = @SecurityRequirement(name = "Authentication"))
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "201", description = "Sucessful"),
+			@ApiResponse(responseCode = "400", description = "Bad Request",
+					content = @Content(schema = @Schema(implementation = StandardError.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized",
+					content = @Content(schema = @Schema(implementation = StandardError.class))),
+			@ApiResponse(responseCode = "422", description = "Unprocessable Entity",
+					content = @Content(schema = @Schema(implementation = StandardError.class)))})
+    public ResponseEntity<CategoryRequest> insert(@RequestBody CategoryRequest categoryRequest) {
+        var category = categoryService.insert(categoryRequest);
+        var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(category.getId()).toUri();
+        return ResponseEntity.created(uri).body(category);
+    }
+
+    @PutMapping(value = "/{id}")
+	@Operation(summary = "Update category by ID",
+			security = @SecurityRequirement(name = "Authentication"))
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Sucessful"),
+			@ApiResponse(responseCode = "400", description = "Bad Request",
+					content = @Content(schema = @Schema(implementation = StandardError.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized",
+					content = @Content(schema = @Schema(implementation = StandardError.class))),
+			@ApiResponse(responseCode = "404", description = "Not Found",
+					content = @Content(schema = @Schema(implementation = StandardError.class))),
+			@ApiResponse(responseCode = "422", description = "Unprocessable Entity",
+					content = @Content(schema = @Schema(implementation = StandardError.class)))})
+    public ResponseEntity<CategoryRequest> update(@PathVariable Long id, @RequestBody CategoryRequest category) {
+        category = categoryService.update(id, category);
+        return ResponseEntity.ok(category);
+    }
+
+    @DeleteMapping(value = "/{id}")
+	@Operation(summary = "Delete category by ID",
+			security = @SecurityRequirement(name = "Authentication"))
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Sucessful"),
+			@ApiResponse(responseCode = "400", description = "Bad Request",
+					content = @Content(schema = @Schema(implementation = StandardError.class))),
+			@ApiResponse(responseCode = "401", description = "Unauthorized",
+					content = @Content(schema = @Schema(implementation = StandardError.class))),
+			@ApiResponse(responseCode = "404", description = "Not Found",
+					content = @Content(schema = @Schema(implementation = StandardError.class))),
+			@ApiResponse(responseCode = "422", description = "Unprocessable Entity",
+					content = @Content(schema = @Schema(implementation = StandardError.class)))})
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        categoryService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }
