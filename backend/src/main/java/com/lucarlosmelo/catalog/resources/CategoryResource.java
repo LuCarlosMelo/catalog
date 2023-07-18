@@ -2,7 +2,7 @@ package com.lucarlosmelo.catalog.resources;
 
 import com.lucarlosmelo.catalog.dtos.categories.CategoryResponse;
 import com.lucarlosmelo.catalog.resources.exceptions.StandardError;
-import com.lucarlosmelo.catalog.services.ImplCategoryService;
+import com.lucarlosmelo.catalog.services.CategoryService;
 import com.lucarlosmelo.catalog.dtos.categories.CategoryRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,7 +29,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class CategoryResource {
 
     @Autowired
-    private ImplCategoryService categoryService;
+    private CategoryService categoryService;
 
     @GetMapping
     @Operation(summary = "Get all categories paginated")
@@ -61,7 +61,7 @@ public class CategoryResource {
 					content = @Content(schema = @Schema(implementation = StandardError.class))),
 			@ApiResponse(responseCode = "422", description = "Unprocessable Entity",
 					content = @Content(schema = @Schema(implementation = StandardError.class)))})
-    public ResponseEntity<CategoryRequest> insert(@RequestBody CategoryRequest categoryRequest) {
+    public ResponseEntity<CategoryResponse> insert(@RequestBody CategoryRequest categoryRequest) {
         var category = categoryService.insert(categoryRequest);
         var uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(category.getId()).toUri();
@@ -81,8 +81,8 @@ public class CategoryResource {
 					content = @Content(schema = @Schema(implementation = StandardError.class))),
 			@ApiResponse(responseCode = "422", description = "Unprocessable Entity",
 					content = @Content(schema = @Schema(implementation = StandardError.class)))})
-    public ResponseEntity<CategoryRequest> update(@PathVariable Long id, @RequestBody CategoryRequest category) {
-        category = categoryService.update(id, category);
+    public ResponseEntity<CategoryResponse> update(@PathVariable Long id, @RequestBody CategoryRequest categoryRequest) {
+       	var category = categoryService.update(id, categoryRequest);
         return ResponseEntity.ok(category);
     }
 

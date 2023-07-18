@@ -1,11 +1,13 @@
 package com.lucarlosmelo.catalog.dtos.categories;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import com.lucarlosmelo.catalog.entities.Category;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CategoryRequest implements Serializable {
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -13,10 +15,7 @@ public class CategoryRequest implements Serializable {
 	@Schema(description = "Category name", example = "Book", required = true)
 	private String name;
 
-	public CategoryRequest(Long id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+	public CategoryRequest(){}
 
 	public CategoryRequest(Category category) {
 		this.id = category.getId();

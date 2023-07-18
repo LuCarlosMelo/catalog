@@ -1,7 +1,7 @@
 package com.lucarlosmelo.catalog.dtos.categories;
 
-import com.lucarlosmelo.catalog.entities.Category;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.lucarlosmelo.catalog.entities.Category;
 
 @JsonSerialize
 public class CategoryResponse {
@@ -10,6 +10,10 @@ public class CategoryResponse {
     public CategoryResponse(Category category){
         id = category.getId();;
         name = category.getName();
+    }
+    public CategoryResponse(CategoryRequest categoryRequest){
+        id = categoryRequest.getId();
+        name = categoryRequest.getName();
     }
     public Long getId() {
         return id;
