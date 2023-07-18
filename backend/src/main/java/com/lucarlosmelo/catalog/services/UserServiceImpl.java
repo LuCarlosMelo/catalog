@@ -23,14 +23,14 @@ import javax.persistence.EntityNotFoundException;
 import java.util.UUID;
 
 @Service
-public class UserService implements ImplUserService {
+public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
 
     private final Util util;
 
-    public UserService(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository, Util util) {
+    public UserServiceImpl(BCryptPasswordEncoder passwordEncoder, UserRepository userRepository, Util util) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.util = util;
@@ -46,7 +46,7 @@ public class UserService implements ImplUserService {
     public UserResponse findById(UUID id) {
         var obj = userRepository.findById(id);
         var entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-        return new UserResponse(entity);
+        return new UserResponse(entity, entity.getRoles());
     }
 
     @Transactional(readOnly = true)
@@ -55,21 +55,21 @@ public class UserService implements ImplUserService {
     }
 
     @Transactional
-    public UserInsertRequest insert(UserInsertRequest request) {
+    public UserResponse insert(UserInsertRequest request) {
         var entity = new User();
         util.copyProperties(request, entity);
         entity.setPassword(passwordEncoder.encode(request.getPassword()));
         entity = userRepository.save(entity);
-        return new UserInsertRequest(entity);
+        return new UserResponse(entity);
     }
 
     @Transactional
-    public UserUpdateRequest update(UUID id, UserUpdateRequest request) {
+    public UserResponse update(UUID id, UserUpdateRequest request) {
         try {
             var user = userRepository.getOne(id);
             util.copyProperties(request, user);
             user = userRepository.save(user);
-            return new UserUpdateRequest(user);
+            return new UserResponse(user, user.getRoles());
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("id não encontrado" + id);
         }

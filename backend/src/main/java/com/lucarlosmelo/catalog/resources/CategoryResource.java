@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +35,7 @@ public class CategoryResource {
     @GetMapping
     @Operation(summary = "Get all categories paginated")
     @ApiResponse(responseCode = "200", description = "Sucessful")
-    public ResponseEntity<Page<CategoryResponse>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<CategoryResponse>> findAll(@ParameterObject Pageable pageable) {
         var categories = categoryService.findAllPaged(pageable);
         return ResponseEntity.ok(categories);
     }

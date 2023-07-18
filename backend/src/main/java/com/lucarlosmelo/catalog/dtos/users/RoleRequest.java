@@ -13,12 +13,6 @@ public class RoleRequest implements Serializable {
 	public RoleRequest() {
 	}
 
-	public RoleRequest(Long id, String authority) {
-		this.id = id;
-		this.authority = authority;
-	}
-
-
 	public RoleRequest(Role role) {
 		super();
 		id = role.getId();

@@ -1,7 +1,9 @@
 package com.lucarlosmelo.catalog.dtos.users;
 
+import com.lucarlosmelo.catalog.entities.Role;
 import com.lucarlosmelo.catalog.entities.User;
 import com.lucarlosmelo.catalog.services.validation.UserInsertValid;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -16,44 +18,23 @@ import java.util.UUID;
 public class UserInsertRequest implements Serializable {
     private static final Long serialVersionUID = 1L;
 
-    private UUID id;
-
     @Size(min = 3, max = 30)
     @NotBlank(message = "Campo obrigatório")
+    @Schema(description = "User first name", example = "Hamilton")
     private String firstName;
     @Size(min = 3, max = 30)
     @NotBlank(message = "Campo obrigatório")
+    @Schema(description = "User last name", example = "Brown")
     private String lastName;
     @Email
+    @Schema(description = "User email", example = "hamilton@email.com")
     private String email;
 
+    @Schema(description = "Access password", example = "********")
     private String password;
+
+    @Schema(description = "User roles", example = "[{\"id\" : 1, \"id\" : 2}]")
     private Set<RoleRequest> roles = new HashSet<>();
-
-    public UserInsertRequest() {
-    }
-
-    public UserInsertRequest(UUID id, String firstName, String lastName, String email) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
-
-    public UserInsertRequest(User user) {
-        id = user.getId();
-        firstName = user.getFirstName();
-        lastName = user.getLastName();
-        email = user.getEmail();
-        user.getRoles().forEach(role -> this.roles.add(new RoleRequest()));
-    }
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public String getFirstName() {
         return firstName;

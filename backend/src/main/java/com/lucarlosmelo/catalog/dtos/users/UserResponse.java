@@ -1,5 +1,6 @@
 package com.lucarlosmelo.catalog.dtos.users;
 
+import com.lucarlosmelo.catalog.entities.Role;
 import com.lucarlosmelo.catalog.entities.User;
 
 import java.util.HashSet;
@@ -19,7 +20,13 @@ public class UserResponse {
         firstName = user.getFirstName();
         lastName = user.getLastName();
         email = user.getEmail();
-        user.getRoles().forEach(role -> this.roles.add(new RoleRequest()));
+    }
+    public UserResponse(User user, Set<Role> roles) {
+        id = user.getId();
+        firstName = user.getFirstName();
+        lastName = user.getLastName();
+        email = user.getEmail();
+        roles.forEach(role -> this.roles.add(new RoleRequest(role)));
     }
 
     public UUID getId() {

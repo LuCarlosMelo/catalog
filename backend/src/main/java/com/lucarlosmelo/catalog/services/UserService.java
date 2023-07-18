@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.UUID;
 
-public interface ImplUserService extends UserDetailsService {
+public interface UserService extends UserDetailsService {
 
     Page<UserResponse> findAllPaged(Pageable pageable);
 
@@ -18,9 +18,9 @@ public interface ImplUserService extends UserDetailsService {
 
     User findByEmail(String email);
 
-    UserInsertRequest insert(UserInsertRequest dto);
+    UserResponse insert(UserInsertRequest dto);
 
-    UserUpdateRequest update(UUID id, UserUpdateRequest dto);
+    UserResponse update(UUID id, UserUpdateRequest dto);
 
     void delete(UUID id);
 
