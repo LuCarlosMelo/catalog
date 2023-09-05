@@ -59,7 +59,6 @@ public class ProductServiceImpl implements ProductService {
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("id não encontrado: " + id);
 		}
-
 	}
 
 	public void delete(UUID id) {

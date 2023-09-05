@@ -7,4 +7,5 @@ import com.lucarlosmelo.catalog.entities.Product;
 import java.util.UUID;
 
 public interface ProductRepository extends JpaRepository<Product, UUID> {
+    long count();
 }

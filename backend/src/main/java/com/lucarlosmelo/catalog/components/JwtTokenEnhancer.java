@@ -1,7 +1,6 @@
 package com.lucarlosmelo.catalog.components;
 
 import com.lucarlosmelo.catalog.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -13,8 +12,11 @@ import java.util.HashMap;
 @Component
 public class JwtTokenEnhancer implements TokenEnhancer {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public JwtTokenEnhancer(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public OAuth2AccessToken enhance(OAuth2AccessToken oAuth2AccessToken, OAuth2Authentication oAuth2Authentication) {
