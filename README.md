@@ -44,11 +44,11 @@ git clone https://github.com/LuCarlosMelo/catalog.git
 - [x] Navegue até o diretório backend:
 
 ```
-cd backend
+cd catalog/backend
 ```
 <br>
 
-- [x] Conceda permissão de execução ao arquivo mvnw:
+- [x] Caso esteja utilizando Linux, conceda permissão de execução ao arquivo mvnw:
 
 ```
 chmod +x mvnw
